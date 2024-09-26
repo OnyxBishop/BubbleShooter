@@ -47,6 +47,8 @@ public class HexGridGenerator : MonoBehaviour
                 var hexPosition = HexOffset(x, y);
                 var position = new Vector3(hexPosition.x, hexPosition.y, 0);
                 var newBubble = _factory.Create((BubbleColors)bubbleType);
+                newBubble.gameObject.layer = 7;
+                newBubble.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
                 
                 newBubble.transform.position = position;
                 newBubble.transform.SetParent(transform);
