@@ -1,10 +1,12 @@
 namespace RamStudio.BubbleShooter.Scripts.Common.Enums
 {
+    [System.Serializable]
     public enum BubbleColors
     {
-        Red = 0,
-        Green = 1,
-        Blue = 2,
-        Purple = 3
+        None = 0,
+        Red = 1,
+        Green = 2,
+        Blue = 3,
+        Purple = 4
     }
 }

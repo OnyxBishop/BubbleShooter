@@ -187,7 +187,6 @@ SpriteAtlas:
     - 40a8bd3d51749bd4da394610553bda1f: 21300000
     - bca3c66deba1e0642997c9667b8eaff9: 21300000
     - a1546b6dbfcf5af4c9eb95c2e82e2544: 21300000
-    - 66d98f7d782df7147825a890b4e93feb: 21300000
     - 682d929d374670a4093f7ba39f46ff4e: 21300000
     - a65049ad391c90f4da4eab5e22b503c8: 21300000
     - 076418bd07b2a9544839b39665ff2314: 21300000
@@ -338,7 +337,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 40a8bd3d51749bd4da394610553bda1f, type: 3}
   - {fileID: 21300000, guid: bca3c66deba1e0642997c9667b8eaff9, type: 3}
   - {fileID: 21300000, guid: a1546b6dbfcf5af4c9eb95c2e82e2544, type: 3}
-  - {fileID: 21300000, guid: 66d98f7d782df7147825a890b4e93feb, type: 3}
   - {fileID: 21300000, guid: 682d929d374670a4093f7ba39f46ff4e, type: 3}
   - {fileID: 21300000, guid: a65049ad391c90f4da4eab5e22b503c8, type: 3}
   - {fileID: 21300000, guid: 076418bd07b2a9544839b39665ff2314, type: 3}
@@ -488,7 +486,6 @@ SpriteAtlas:
   - SpellSlot_Icon_Mask
   - Quest_IconBox
   - Planet
-  - Character_Avatar_Mask
   - LevelComplete_Stats_Swords
   - Chat
   - FB_Box
