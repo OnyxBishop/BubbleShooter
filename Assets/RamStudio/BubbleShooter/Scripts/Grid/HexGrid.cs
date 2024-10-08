@@ -76,18 +76,26 @@ namespace RamStudio.BubbleShooter.Scripts.Grid
             if (sender is not GameEndState)
                 throw new ArgumentException($"Sender is not valid.");
 
+            var cells = new List<HexCell>();
             var sequence = DOTween.Sequence();
 
             for (var row = 0; row < _height; row++)
             {
                 for (var column = 0; column < _width; column++)
                 {
-                    var bubble = _cells[column, row].Bubble;
+                    var cell = _cells[column, row];
 
-                    if (bubble)
-                        sequence.Append(bubble.transform
-                                .DOMoveY(Bounds.Bottom.y, _fallAnimationDuration * 0.5f));
+                    if (!cell.IsEmpty)
+                        cells.Add(cell);
                 }
+            }
+
+            foreach (var cell in cells)
+            {
+                var bubble = cell.Bubble;
+                
+                sequence.Append(bubble.transform
+                    .DOMoveY(Bounds.Bottom.y, _fallAnimationDuration * 0.25f)).OnComplete(bubble.OnPop);
             }
             
             sequence.OnComplete(() => callback?.Invoke());
