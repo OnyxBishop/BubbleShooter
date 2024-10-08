@@ -14,7 +14,7 @@ namespace RamStudio.BubbleShooter.Scripts.Services
         {
             _saveLoadService = saveLoadService;
             _savableData = _saveLoadService.LoadFromPrefs(SaveNames.PlayerData);
-            _points = _savableData.ScorePoints;
+            _points = 0;
         }
 
         public event Action<int> Changed;

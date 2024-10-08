@@ -1,8 +1,10 @@
 using RamStudio.BubbleShooter.Scripts.Common.Enums;
 using RamStudio.BubbleShooter.Scripts.GameStateMachine.Interfaces;
+using RamStudio.BubbleShooter.Scripts.Grid;
 using RamStudio.BubbleShooter.Scripts.GUI;
+using RamStudio.BubbleShooter.Scripts.GUI.Popups;
 using RamStudio.BubbleShooter.Scripts.Services;
-using UnityEngine;
+using RamStudio.BubbleShooter.Scripts.SlingshotBehaviour;
 
 namespace RamStudio.BubbleShooter.Scripts.GameStateMachine.States
 {
@@ -10,28 +12,26 @@ namespace RamStudio.BubbleShooter.Scripts.GameStateMachine.States
     {
         private readonly StateMachine _stateMachine;
         private readonly GameplayHUD _gameplayHUD;
-        private readonly ScoreStorage _scoreStorage;
-        private readonly StoragePresenter _presenter;
+        private readonly StoragePresenter _scorePresenter;
+        private readonly AmmoStoragePresenter _ammoPresenter;
+        private readonly HexGrid _grid;
 
         private GameEndPopup _endPopup;
 
-        public GameEndState(StateMachine stateMachine, GameplayHUD gameplayHUD, ScoreStorage scoreStorage,
-            StoragePresenter presenter)
+        public GameEndState(StateMachine stateMachine, GameplayHUD gameplayHUD,
+            StoragePresenter presenter, AmmoStoragePresenter ammoStoragePresenter, HexGrid grid)
         {
             _stateMachine = stateMachine;
             _gameplayHUD = gameplayHUD;
-            _scoreStorage = scoreStorage;
-            _presenter = presenter;
+            _scorePresenter = presenter;
+            _ammoPresenter = ammoStoragePresenter;
+            _grid = grid;
         }
 
         public void Enter(GameEndPopup popup)
         {
-            _endPopup = Object.Instantiate(popup);
-            _endPopup.RectTransform.anchoredPosition = _gameplayHUD.Content.pivot;
-
-            _endPopup.Init(_scoreStorage.Points.ToString());
-            _endPopup.AcceptClicked += AcceptClicked;
-            _endPopup.DeclineClicked += OnDeclineClicked;
+            _endPopup = popup;
+            _grid.DropAllBubbles(this, OnAllBubblesDown);
         }
 
         public void Enter()
@@ -40,18 +40,29 @@ namespace RamStudio.BubbleShooter.Scripts.GameStateMachine.States
 
         public void Exit()
         {
-            _presenter.Dispose();
+            _scorePresenter.Dispose();
+            _ammoPresenter.Dispose();
         }
 
-        private void AcceptClicked()
+        private void OnAllBubblesDown()
         {
-            _endPopup.AcceptClicked -= AcceptClicked;
-            _stateMachine.ChangeState<LoadLevelState>();
+            _endPopup.RectTransform.SetParent(_gameplayHUD.Content, false);
+            _endPopup.RectTransform.anchoredPosition = _gameplayHUD.Content.pivot;
+
+            _endPopup.Open();
+            _endPopup.RestartClicked += OnRestartClicked;
+            _endPopup.GoToMenuClicked += OnMenuButtonClicked;
         }
 
-        private void OnDeclineClicked()
+        private void OnRestartClicked()
         {
-            _endPopup.DeclineClicked -= OnDeclineClicked;
+            _endPopup.RestartClicked -= OnRestartClicked;
+            _stateMachine.ChangeState<SwitchSceneState, SceneNames>(SceneNames.Gameplay);
+        }
+
+        private void OnMenuButtonClicked()
+        {
+            _endPopup.GoToMenuClicked -= OnMenuButtonClicked;
             _stateMachine.ChangeState<SwitchSceneState, SceneNames>(SceneNames.Menu);
         }
     }

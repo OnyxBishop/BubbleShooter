@@ -1,16 +1,17 @@
 using System;
+using RamStudio.BubbleShooter.Scripts.GUI;
 
 namespace RamStudio.BubbleShooter.Scripts.Services
 {
     public class StoragePresenter : IDisposable
     {
         private readonly ScoreStorage _scoreStorage;
-        private readonly ValueView _valueView;
+        private readonly IntValueView _intValueView;
         
-        public StoragePresenter(ScoreStorage scoreStorage, ValueView valueView)
+        public StoragePresenter(ScoreStorage scoreStorage, IntValueView intValueView)
         {
             _scoreStorage = scoreStorage;
-            _valueView = valueView;
+            _intValueView = intValueView;
 
             OnValueChanged(_scoreStorage.Points);
             _scoreStorage.Changed += OnValueChanged;
@@ -20,6 +21,6 @@ namespace RamStudio.BubbleShooter.Scripts.Services
             _scoreStorage.Changed -= OnValueChanged;
 
         private void OnValueChanged(int amount) 
-            => _valueView.UpdateText(amount);
+            => _intValueView.UpdateText(amount);
     }
 }

@@ -9,23 +9,26 @@ namespace RamStudio.BubbleShooter.Scripts.SlingshotBehaviour
     public class AmmoStorage
     {
         private readonly BubbleSpawner _spawner;
-        
+
         private readonly BubbleColors[] _availableColors = Enum.GetValues(typeof(BubbleColors))
             .Cast<BubbleColors>()
             .Where(color => color != BubbleColors.None)
             .ToArray();
-        
+
         private int _initialCount;
-        private int _currentValue;
-        
+
         public AmmoStorage(BubbleSpawner spawner, int initialCount)
         {
             _spawner = spawner;
             _initialCount = initialCount;
+
+            ChooseNextColor();
         }
 
-        public event Action<int> Changed;
+        public event Action<int, BubbleColors> Changed;
         public bool HasBubbles => _initialCount > 0;
+        public BubbleColors CurrentColor { get; private set; }
+        public int Count => _initialCount;
 
         public bool TryGet(out Bubble bubble)
         {
@@ -34,15 +37,20 @@ namespace RamStudio.BubbleShooter.Scripts.SlingshotBehaviour
             if (!HasBubbles)
                 return false;
 
-            var randomColor = _availableColors[Random.Range(0, _availableColors.Length)];
-            
-            bubble = _spawner.Spawn(randomColor);;
+            bubble = _spawner.Spawn(CurrentColor);
             bubble.gameObject.layer = 6;
+            
             _initialCount--;
-            
-            Changed?.Invoke(_initialCount);
-            
+            ChooseNextColor();
+
+            Changed?.Invoke(_initialCount, CurrentColor);
+
             return true;
+        }
+
+        private void ChooseNextColor()
+        {
+            CurrentColor = _availableColors[Random.Range(0, _availableColors.Length)];
         }
     }
 }

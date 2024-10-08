@@ -29,7 +29,7 @@ namespace RamStudio.BubbleShooter.Scripts.Services.DataSavers
 
             File.WriteAllText(filePath, _serializer.Serialize(data));
         }
-
+        
         public TSavable Load<TSavable>(string name)
             where TSavable : ISavable, new()
         {
@@ -39,6 +39,18 @@ namespace RamStudio.BubbleShooter.Scripts.Services.DataSavers
                 ? new TSavable()
                 : _serializer.Deserialize<TSavable>(File.ReadAllText(dataPath));
         }
+        
+#if UNITY_EDITOR
+        public TSavable Load<TSavable>(string name, bool editorOnly)
+            where TSavable : ISavable, new()
+        {
+            var dataPath = GetFilePath(name);
+
+            return !IsPathExists(dataPath)
+                ? new TSavable()
+                : _serializer.Deserialize<TSavable>(File.ReadAllText(dataPath));
+        }
+#endif
 
         public void Delete(string name)
         {

@@ -20,17 +20,17 @@ namespace RamStudio.BubbleShooter.Scripts.SlingshotBehaviour
 
             _slingshot.Reloaded += OnReloaded;
             _trajectory.Aiming += OnAiming;
-            _trajectory.Calculated += OnTrajectoryCalculated;
+            _trajectory.HasContacts += OnTrajectoryHasContacts;
         }
 
         public void Dispose()
         {
             _slingshot.Reloaded -= OnReloaded;
             _trajectory.Aiming -= OnAiming;
-            _trajectory.Calculated -= OnTrajectoryCalculated;
+            _trajectory.HasContacts -= OnTrajectoryHasContacts;
         }
 
-        private void OnTrajectoryCalculated(IReadOnlyCollection<Vector3> trajectory, float force)
+        private void OnTrajectoryHasContacts(IReadOnlyList<Vector2> trajectory, float force)
         {
             _slingshot.Shoot(trajectory, force);
             _slingshotStripsView.RevertToFirePoint();

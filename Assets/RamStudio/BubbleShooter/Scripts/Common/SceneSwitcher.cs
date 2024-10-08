@@ -1,13 +1,14 @@
 using RamStudio.BubbleShooter.Scripts.Common.Enums;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace RamStudio.BubbleShooter.Scripts.Common
 {
     public static class SceneSwitcher
     {
-        public static void ChangeToAsync(SceneNames sceneName)
+        public static AsyncOperation ChangeToAsync(SceneNames sceneName)
         {
-            SceneManager.LoadSceneAsync(sceneName.ToString());
+            return SceneManager.LoadSceneAsync(sceneName.ToString());
         }
     }
 }

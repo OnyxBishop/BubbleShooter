@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using RamStudio.BubbleShooter.Scripts.Boot.Data;
+using RamStudio.BubbleShooter.Scripts.Common;
 using RamStudio.BubbleShooter.Scripts.Common.Enums;
 using RamStudio.BubbleShooter.Scripts.Services.DataSavers;
 using RamStudio.BubbleShooter.Scripts.Services.Interfaces;
@@ -45,8 +46,18 @@ namespace RamStudio.BubbleShooter.Scripts.Services
         public GridData LoadGrid(string id)
         {
             var fileName = $"{SaveNames.Grid}{id}";
+            var gridTxt = Resources.Load<TextAsset>($"{AssetPaths.TextAssets}/{fileName}");
+            
+            return JsonUtility.FromJson<GridData>(gridTxt.text);
+        }
+        
+#if UNITY_EDITOR
+        public GridData LoadGrid(string id, bool usingOnlyInEditor)
+        {
+            var fileName = $"{SaveNames.Grid}{id}";
             return TryGetService(typeof(FileDataService))?.Load<GridData>(fileName);
         }
+#endif
 
         public bool IsExists(Type serviceType, string fullName) 
             => TryGetService(serviceType).IsExists(fullName);

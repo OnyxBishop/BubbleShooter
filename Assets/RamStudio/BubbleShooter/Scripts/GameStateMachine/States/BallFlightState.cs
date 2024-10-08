@@ -62,6 +62,7 @@ namespace RamStudio.BubbleShooter.Scripts.GameStateMachine.States
 
             if (neighbours.Count > 0)
             {
+                Shake(neighbours);
                 _hexGrid.InsertBubble(cell, _launchedBubble);
                 
                 var topLeftCoordinates =
@@ -74,8 +75,7 @@ namespace RamStudio.BubbleShooter.Scripts.GameStateMachine.States
                     if (neighbour.OffsetCoordinates.Equals(topLeftCoordinates) ||
                         neighbour.OffsetCoordinates.Equals(topRightCoordinates))
                         cell.IncreaseConnectedness();
-
-                Shake(neighbours);
+                
                 _stateMachine.ChangeState<CheckColorClusterState, HexCell>(cell);
             }
             else

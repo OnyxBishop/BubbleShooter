@@ -4,43 +4,40 @@ using UnityEngine;
 
 namespace RamStudio.BubbleShooter.Scripts.Bubbles
 {
-    [RequireComponent(typeof(Animation))]
+    [RequireComponent(typeof(Animator))]
     public class Bubble : MonoBehaviour
     {
-        private const string Pop = nameof(Pop);
-        private const string Appear = nameof(Appear);
-
-        [SerializeField] private AnimationClip _appearClip;
-        [SerializeField] private AnimationClip _popClip;
-    
+        private readonly int Pop = Animator.StringToHash(nameof(Pop));
+        private readonly int Appear = Animator.StringToHash(nameof(Appear));
+        
         private SpriteRenderer _spriteRenderer;
-        private Animation _animation;
+        private Animator _animator;
 
         public event Action<Bubble> Popped; 
         public BubbleColors Color { get; private set; }
 
         private void Awake()
         {
-            _animation = GetComponent<Animation>();
-            _animation.AddClip(_appearClip, Appear);
-            _animation.AddClip(_popClip, Pop);
+            _animator = GetComponent<Animator>();
             _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         }
-    
+
         public void Init(BubbleColors color, Sprite sprite)
         {
             Color = color;
             _spriteRenderer.sprite = sprite;
-            _animation.CrossFade(Appear);
         }
 
         public void OnPop()
         {
-            _animation.CrossFade(Pop);
+            _animator.SetTrigger(Pop);
             Popped?.Invoke(this);
         }
 
-        public void OnAnimationEnded() 
-            => gameObject.SetActive(false);
+        public void OnAnimationEnded()
+        {
+            gameObject.SetActive(false);
+            gameObject.transform.localScale = Vector3.one;
+        }
     }
 }

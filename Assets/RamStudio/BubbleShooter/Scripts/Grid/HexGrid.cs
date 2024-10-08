@@ -6,6 +6,7 @@ using RamStudio.BubbleShooter.Scripts.Bubbles;
 using RamStudio.BubbleShooter.Scripts.Common;
 using RamStudio.BubbleShooter.Scripts.Common.Enums;
 using RamStudio.BubbleShooter.Scripts.Common.Structs;
+using RamStudio.BubbleShooter.Scripts.GameStateMachine.States;
 using UnityEngine;
 
 namespace RamStudio.BubbleShooter.Scripts.Grid
@@ -68,6 +69,28 @@ namespace RamStudio.BubbleShooter.Scripts.Grid
             }
 
             Initialized?.Invoke(firstRow);
+        }
+
+        public void DropAllBubbles(object sender, Action callback)
+        {
+            if (sender is not GameEndState)
+                throw new ArgumentException($"Sender is not valid.");
+
+            var sequence = DOTween.Sequence();
+
+            for (var row = 0; row < _height; row++)
+            {
+                for (var column = 0; column < _width; column++)
+                {
+                    var bubble = _cells[column, row].Bubble;
+
+                    if (bubble)
+                        sequence.Append(bubble.transform
+                                .DOMoveY(Bounds.Bottom.y, _fallAnimationDuration * 0.5f));
+                }
+            }
+            
+            sequence.OnComplete(() => callback?.Invoke());
         }
 
         public void NotifyChangeConnectedness(HexCell cell, NotificationTypes notification,

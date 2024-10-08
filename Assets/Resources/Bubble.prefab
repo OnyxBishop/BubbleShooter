@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7032681651184106579}
   - component: {fileID: -3323516572187906581}
-  - component: {fileID: -6718976620752585044}
+  - component: {fileID: 1460274294551988355}
   m_Layer: 6
   m_Name: Bubble
   m_TagString: Untagged
@@ -33,7 +33,7 @@ Transform:
   m_Children:
   - {fileID: 672784489013027244}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -51.777782}
 --- !u!114 &-3323516572187906581
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -46,23 +46,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4da5cbd79a7db94ba142314ea8fdc20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _appearClip: {fileID: 7400000, guid: bd5654b0d05ab2a43b46ff6364fa7a1e, type: 2}
-  _popClip: {fileID: 7400000, guid: 46f5c7661aa87474481e91f65f022305, type: 2}
---- !u!111 &-6718976620752585044
-Animation:
+--- !u!95 &1460274294551988355
+Animator:
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4468316629337997303}
   m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 0}
-  m_Animations: []
-  m_WrapMode: 0
-  m_PlayAutomatically: 0
-  m_AnimatePhysics: 0
-  m_CullingType: 0
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9fdb47af8ddc0bc4cb29ece79ae295c9, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &8105980735384148605
 GameObject:
   m_ObjectHideFlags: 0

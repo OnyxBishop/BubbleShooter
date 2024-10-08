@@ -8,7 +8,6 @@ namespace RamStudio.BubbleShooter.Scripts.SlingshotBehaviour
     {
         [Header("Lines View")]
         [SerializeField] private LineRenderer _leftStrip;
-
         [SerializeField] private LineRenderer _rightStrip;
         [SerializeField] private Transform _leftStripEnd;
         [SerializeField] private Transform _rightStripEnd;
@@ -17,6 +16,7 @@ namespace RamStudio.BubbleShooter.Scripts.SlingshotBehaviour
 
         private Vector2 _firePointPosition;
         private Bubble _currentBubble;
+        private Coroutine _revertCoroutine;
 
         public void Init(Vector2 firePointPosition)
         {
@@ -25,7 +25,13 @@ namespace RamStudio.BubbleShooter.Scripts.SlingshotBehaviour
         }
 
         public void SetBubble(Bubble bubble)
-            => _currentBubble = bubble;
+        {
+            _currentBubble = bubble;
+            _currentBubble.transform.position = _firePointPosition;
+
+            if (_revertCoroutine != null)
+                StopCoroutine(_revertCoroutine);
+        }
 
         public void SetLines(Vector2 position)
         {
@@ -47,7 +53,10 @@ namespace RamStudio.BubbleShooter.Scripts.SlingshotBehaviour
             _currentBubble = null;
             var startPosition = (Vector2)_leftStrip.GetPosition(0);
 
-            StartCoroutine(RevertCoroutine(startPosition));
+            if(_revertCoroutine != null)
+                StopCoroutine(_revertCoroutine);
+            
+            _revertCoroutine = StartCoroutine(RevertCoroutine(startPosition));
         }
 
         private IEnumerator RevertCoroutine(Vector2 from)

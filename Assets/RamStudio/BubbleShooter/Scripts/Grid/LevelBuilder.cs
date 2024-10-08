@@ -10,6 +10,7 @@ namespace RamStudio.BubbleShooter.Scripts.Grid
         public HexGrid Build(BubbleSpawner spawner)
         {
             var screenHeight = GetScreenParams(out var screenWidth);
+            screenHeight -= BootstrapInfo.SafeAreaOffsetY;
             var hexGrid = ComputeHexGrid(spawner, screenWidth, screenHeight);
 
             return hexGrid;

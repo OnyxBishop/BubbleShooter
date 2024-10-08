@@ -11,14 +11,12 @@ namespace RamStudio.BubbleShooter.Scripts.GameStateMachine.States
         private readonly StateMachine _stateMachine;
         private readonly SaveLoadService _saveLoadService;
         private readonly HexGrid _grid;
-        private readonly string _levelId;
 
-        public LoadLevelState(StateMachine stateMachine, SaveLoadService saveLoadService, HexGrid grid, string levelId)
+        public LoadLevelState(StateMachine stateMachine, SaveLoadService saveLoadService, HexGrid grid)
         {
             _stateMachine = stateMachine;
             _saveLoadService = saveLoadService;
             _grid = grid;
-            _levelId = levelId;
         }
 
         public void Enter(string levelId)
@@ -45,5 +43,16 @@ namespace RamStudio.BubbleShooter.Scripts.GameStateMachine.States
 
             return array2D;
         }
+        
+#if UNITY_EDITOR
+        private BubbleColors[,] LoadGrid(string id, bool inEditorOnly)
+        {
+            var gridData = _saveLoadService.LoadGrid(id);
+            var bubblesArray = gridData.BubblesArray;
+            var array2D = bubblesArray.To2dArray(gridData.Columns, gridData.Rows);
+
+            return array2D;
+        }
+#endif
     }
 }
