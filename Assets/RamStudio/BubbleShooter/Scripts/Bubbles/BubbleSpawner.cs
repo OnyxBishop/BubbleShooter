@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using RamStudio.BubbleShooter.Scripts.Common.Enums;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace RamStudio.BubbleShooter.Scripts.Bubbles
 {
@@ -11,12 +10,7 @@ namespace RamStudio.BubbleShooter.Scripts.Bubbles
     {
         private BubblesPool _pool;
         private IReadOnlyList<Sprite> _sprites;
-
-        private BubbleColors[] _availableColors = Enum.GetValues(typeof(BubbleColors))
-            .Cast<BubbleColors>()
-            .Where(color => color != BubbleColors.None)
-            .ToArray();
-
+        
         public void Init(BubblesPool pool, IReadOnlyList<Sprite> sprites)
         {
             _pool = pool;
@@ -30,17 +24,7 @@ namespace RamStudio.BubbleShooter.Scripts.Bubbles
 
             return bubble;
         }
-
-        public Bubble GetLaunchBall()
-        {
-            var bubble = _pool.Get();
-
-            var randomColor = _availableColors[Random.Range(0, _availableColors.Length)];
-            bubble.Init(randomColor, GetSprite(randomColor));
-
-            return bubble;
-        }
-
+        
         private Sprite GetSprite(BubbleColors color)
         {
             var sprite = _sprites.FirstOrDefault(sprite => sprite.name == color.ToString());

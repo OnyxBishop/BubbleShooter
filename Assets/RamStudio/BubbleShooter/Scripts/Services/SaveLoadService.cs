@@ -22,7 +22,13 @@ namespace RamStudio.BubbleShooter.Scripts.Services
                 _dataServices.TryAdd(type, dataService);
             }
         }
-        
+
+        public void SaveToPrefs(PlayerData playerData) 
+            => TryGetService(typeof(PrefsDataService))?.Save(playerData);
+
+        public PlayerData LoadFromPrefs(SaveNames saveName) 
+            => TryGetService(typeof(PrefsDataService))?.Load<PlayerData>(saveName.ToString());
+
         public void SaveGridToFile(BubbleColors[] array, int columns, int rows, string id)
         {
             var gridData = new GridData

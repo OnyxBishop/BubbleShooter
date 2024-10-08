@@ -1,7 +1,10 @@
 using System.Collections.Generic;
 using DG.Tweening;
+using RamStudio.BubbleShooter.Scripts.Bubbles;
 using RamStudio.BubbleShooter.Scripts.Common;
+using RamStudio.BubbleShooter.Scripts.Common.Enums;
 using RamStudio.BubbleShooter.Scripts.GameStateMachine.Interfaces;
+using RamStudio.BubbleShooter.Scripts.Grid;
 using RamStudio.BubbleShooter.Scripts.SlingshotBehaviour;
 using UnityEngine;
 
@@ -45,28 +48,40 @@ namespace RamStudio.BubbleShooter.Scripts.GameStateMachine.States
         private void OnBallLanded()
         {
             var ballPosition = (Vector2)_launchedBubble.transform.position;
+
+            if(CheckOutOfBounce(ballPosition))
+                return;
+            
             var offset = ballPosition.ToOffset(_hexGrid.Origin);
             var cell = _hexGrid.TryGetCellAtPosition(offset);
-            var connectedNeighbours = _hexGrid.GetNeighbours(cell, (neighbour) => neighbour.IsConnected);
             
-            foreach (var connectedNeighbour in connectedNeighbours)
-            {
-                Debug.Log($"{connectedNeighbour.OffsetCoordinates.Column}|{connectedNeighbour.OffsetCoordinates.Row}");
-            }
+            if(cell is { IsEmpty: false })
+                cell.ReplaceBubble(_launchedBubble);
             
-            if (cell != null && connectedNeighbours.Count > 0)
+            var neighbours = _hexGrid.GetNeighbours(cell, (neighbour) => !neighbour.IsEmpty);
+
+            if (neighbours.Count > 0)
             {
-                Debug.Log($"Должен лопнуть");
-                cell.SetBubble(_launchedBubble);
-                cell.MarkAsConnected();
-                Shake(connectedNeighbours);
+                _hexGrid.InsertBubble(cell, _launchedBubble);
+                
+                var topLeftCoordinates =
+                    HexExtensions.GetNeighbourOffset(cell.OffsetCoordinates, NeighboursNames.TopLeft);
+                
+                var topRightCoordinates =
+                    HexExtensions.GetNeighbourOffset(cell.OffsetCoordinates, NeighboursNames.TopRight);
+                
+                foreach (var neighbour in neighbours)
+                    if (neighbour.OffsetCoordinates.Equals(topLeftCoordinates) ||
+                        neighbour.OffsetCoordinates.Equals(topRightCoordinates))
+                        cell.IncreaseConnectedness();
+
+                Shake(neighbours);
                 _stateMachine.ChangeState<CheckColorClusterState, HexCell>(cell);
             }
             else
             {
-                Debug.Log($"Попал не туда");
                 _launchedBubble.OnPop();
-                _stateMachine.ChangeState<ReloadSlingshotState>();
+                _stateMachine.ChangeState<CheckEndConditionState>();
             }
         }
 
@@ -74,15 +89,29 @@ namespace RamStudio.BubbleShooter.Scripts.GameStateMachine.States
         {
             foreach (var neighbour in neighbours)
             {
-                var bubbleTransform = neighbour.Bubble.transform;
+                var bubbleTransform = neighbour.Bubble?.transform;
+
+                if (bubbleTransform == null) 
+                    continue;
+                
                 Vector2 originalPos = bubbleTransform.position;
                 var direction = (originalPos - (Vector2)_launchedBubble.transform.position).normalized;
-                
-                neighbour.Bubble.transform.DOShakePosition(_shakeDuration, 
-                        strength: direction * _shakeDistance, 
+
+                neighbour.Bubble.transform.DOShakePosition(_shakeDuration,
+                        strength: direction * _shakeDistance,
                         vibrato: _shakeVibrato)
                     .SetEase(Ease.OutSine);
             }
+        }
+
+        private bool CheckOutOfBounce(Vector2 ballPosition)
+        {
+            if (!(ballPosition.y >= _hexGrid.Bounds.Top.y)) 
+                return false;
+            
+            _launchedBubble.OnPop();
+            _stateMachine.ChangeState<ReloadSlingshotState>();
+            return true;
         }
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections;
+using RamStudio.BubbleShooter.Scripts.Bubbles;
 using UnityEngine;
 
 namespace RamStudio.BubbleShooter.Scripts.SlingshotBehaviour

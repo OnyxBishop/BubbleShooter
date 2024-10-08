@@ -1,7 +1,7 @@
+using RamStudio.BubbleShooter.Scripts.Bubbles;
 using RamStudio.BubbleShooter.Scripts.GameStateMachine.Interfaces;
 using RamStudio.BubbleShooter.Scripts.Services;
 using RamStudio.BubbleShooter.Scripts.SlingshotBehaviour;
-using UnityEngine;
 
 namespace RamStudio.BubbleShooter.Scripts.GameStateMachine.States
 {
@@ -9,24 +9,24 @@ namespace RamStudio.BubbleShooter.Scripts.GameStateMachine.States
     {
         private readonly StateMachine _stateMachine;
         private readonly Slingshot _slingshot;
-        private readonly InputSystem _inputSystem;
+        private readonly InputService _inputService;
         
-        public PlayerInputState(StateMachine stateMachine, Slingshot slingshot, InputSystem inputSystem)
+        public PlayerInputState(StateMachine stateMachine, Slingshot slingshot, InputService inputService)
         {
             _stateMachine = stateMachine;
             _slingshot = slingshot;
-            _inputSystem = inputSystem;
+            _inputService = inputService;
         }
         
         public void Enter()
         {
-            _inputSystem.Enable();
+            _inputService.Enable();
             _slingshot.Shot += OnShoot;
         }
 
         public void Exit()
         {
-            _inputSystem.Disable();
+            _inputService.Disable();
             _slingshot.Shot -= OnShoot;
         }
 

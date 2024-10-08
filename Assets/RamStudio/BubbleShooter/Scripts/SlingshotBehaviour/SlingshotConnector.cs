@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using RamStudio.BubbleShooter.Scripts.Bubbles;
 using RamStudio.BubbleShooter.Scripts.SlingshotBehaviour.TrajectoryPrediction;
 using UnityEngine;
 

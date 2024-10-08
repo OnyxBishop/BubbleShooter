@@ -1,4 +1,3 @@
-using RamStudio.BubbleShooter.Scripts.Bubbles;
 using RamStudio.BubbleShooter.Scripts.GameStateMachine.Interfaces;
 using RamStudio.BubbleShooter.Scripts.SlingshotBehaviour;
 
@@ -9,34 +8,28 @@ namespace RamStudio.BubbleShooter.Scripts.GameStateMachine.States
         private readonly StateMachine _stateMachine;
         private readonly Slingshot _slingshot;
         private readonly SlingshotConnector _connector;
-        private readonly BubbleSpawner _spawner;
-        private readonly int _shotCount;
-
-        private int _slingshotGivenBalls;
+        private readonly AmmoStorage _ammoStorage;
 
         public ReloadSlingshotState(StateMachine stateMachine, Slingshot slingshot, SlingshotConnector connector,
-            BubbleSpawner spawner, int shotCount)
+            AmmoStorage ammoStorage)
         {
             _stateMachine = stateMachine;
             _slingshot = slingshot;
-            _spawner = spawner;
             _connector = connector;
-            _shotCount = shotCount;
+            _ammoStorage = ammoStorage;
         }
 
         public void Enter()
         {
-            if (_slingshotGivenBalls <= _shotCount)
+            if (_ammoStorage.TryGet(out var bubble))
             {
-                _slingshot.Reload(_spawner.GetLaunchBall());
-                _slingshotGivenBalls++;
-                
+                _slingshot.Reload(bubble);
                 _stateMachine.ChangeState<PlayerInputState>();
             }
             else
             {
                 _connector.Dispose();
-                _stateMachine.ChangeState<GameOverState>();
+                _stateMachine.ChangeState<CheckEndConditionState>();
             }
         }
 

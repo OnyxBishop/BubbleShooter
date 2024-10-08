@@ -8,7 +8,7 @@ namespace RamStudio.BubbleShooter.Scripts.GameStateMachine
     {
         private readonly Dictionary<Type, IState> _states = new();
         private IState _currentState;
-
+        
         public void AddStates(params IState[] states)
         {
             foreach (var state in states)
@@ -17,8 +17,8 @@ namespace RamStudio.BubbleShooter.Scripts.GameStateMachine
                 _states.TryAdd(type, state);
             }
         }
-        
-        public void ChangeState<TState>() 
+
+        public void ChangeState<TState>()
             where TState : IState
         {
             var type = typeof(TState);
@@ -30,7 +30,7 @@ namespace RamStudio.BubbleShooter.Scripts.GameStateMachine
             _currentState = nextState;
             _currentState.Enter();
         }
-        
+
         public void ChangeState<TState, TData>(TData data)
             where TState : IStateWithPayload<TData>
         {
@@ -38,7 +38,7 @@ namespace RamStudio.BubbleShooter.Scripts.GameStateMachine
 
             if (!_states.TryGetValue(type, out var nextState))
                 throw new ArgumentException($"You dont added state {nameof(type)}");
-            
+
             _currentState?.Exit();
             _currentState = nextState;
 

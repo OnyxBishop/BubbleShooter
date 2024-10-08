@@ -28,10 +28,13 @@ namespace RamStudio.BubbleShooter.Scripts.Common
 
         public const float HexRadius = 0.5f;
 
+        public static bool IsOdd(int row) 
+            => row % 2 == 1;
+        
         public static OffsetCoordinates GetNeighbourOffset(OffsetCoordinates coordinates,
             NeighboursNames neighboursName)
         {
-            var offsets = coordinates.Row % 2 == 1
+            var offsets = IsOdd(coordinates.Row)
                 ? OddRowsOffsets
                 : EvenRowsOffsets;
 
@@ -45,7 +48,7 @@ namespace RamStudio.BubbleShooter.Scripts.Common
             var horizontalOffset = Mathf.Sqrt(3) * HexRadius;
             var verticalOffset = 1.5f * HexRadius;
 
-            var xOffset = coordinates.Row % 2 == 1
+            var xOffset = IsOdd(coordinates.Row)
                 ? horizontalOffset / 2
                 : 0;
 
@@ -58,37 +61,19 @@ namespace RamStudio.BubbleShooter.Scripts.Common
         public static OffsetCoordinates ToOffset(this Vector2 position, Vector2 origin)
         {
             var horizontalOffset = Mathf.Sqrt(3) * HexRadius;
-            var verticalOffset =  1.5f * HexRadius;
+            var verticalOffset = 1.5f * HexRadius;
             var localPos = position - origin;
 
             var roughRow = Mathf.RoundToInt(-localPos.y / verticalOffset);
-            var isOdd = roughRow % 2 == 1;
-
-            var xOffset = isOdd
+            
+            var xOffset = IsOdd(roughRow)
                 ? horizontalOffset / 2
                 : 0;
 
-            var roughColumn = Mathf.RoundToInt(localPos.x - xOffset / horizontalOffset);
-
-            var currentOffsets = isOdd
-                ? OddRowsOffsets
-                : EvenRowsOffsets;
+            var roughColumn = Mathf.RoundToInt((localPos.x - xOffset) / horizontalOffset);
 
             var closestOffset = new OffsetCoordinates(roughColumn, roughRow);
-
-            foreach (var offset in currentOffsets)
-            {
-                var neighbourOffset = new OffsetCoordinates(roughColumn + offset.Column, roughRow + offset.Row);
-
-                if ((position - ToWorld(new OffsetCoordinates(neighbourOffset.Column, neighbourOffset.Row), origin))
-                    .sqrMagnitude <
-                    (position - ToWorld(new OffsetCoordinates(closestOffset.Column, closestOffset.Row), origin))
-                    .sqrMagnitude)
-                {
-                    closestOffset = neighbourOffset;
-                }
-            }
-
+            
             return closestOffset;
         }
     }

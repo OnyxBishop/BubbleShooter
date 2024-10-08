@@ -1,8 +1,10 @@
+using System;
 using JetBrains.Annotations;
+using RamStudio.BubbleShooter.Scripts.Bubbles;
 using RamStudio.BubbleShooter.Scripts.Common.Structs;
 using UnityEngine;
 
-namespace RamStudio.BubbleShooter.Scripts
+namespace RamStudio.BubbleShooter.Scripts.Grid
 {
     public class HexCell
     {
@@ -11,10 +13,13 @@ namespace RamStudio.BubbleShooter.Scripts
             OffsetCoordinates = coordinates;
             WorldPosition = worldPosition;
             Bubble = null;
+            Connectedness = 0;
         }
 
+        public event Action<HexCell> Disconnected;
+
+        public byte Connectedness { get; private set; }
         [CanBeNull] public Bubble Bubble { get; private set; }
-        public bool IsConnected { get; private set; }
         public bool IsEmpty => Bubble == null;
         public Vector2 WorldPosition { get; }
         public OffsetCoordinates OffsetCoordinates { get; }
@@ -31,16 +36,28 @@ namespace RamStudio.BubbleShooter.Scripts
         public void PopBubble()
         {
             Bubble?.OnPop();
-            IsConnected = false;
             Bubble = null;
+            Connectedness = 0;
         }
 
-        public void MarkAsConnected()
+        public void ReplaceBubble(Bubble newBubble)
         {
-            if (IsConnected)
-                return;
+            Bubble?.OnPop();
+            Bubble = newBubble;
+        }
+        
+        public void IncreaseConnectedness(byte value = 1) 
+            => Connectedness += value;
 
-            IsConnected = true;
+        public void DecreaseConnectedness()
+        {
+            if (Connectedness <= 0) 
+                return;
+            
+            Connectedness--;
+
+            if (Connectedness == 0 && !IsEmpty)
+                Disconnected?.Invoke(this);
         }
     }
 }

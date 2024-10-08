@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace RamStudio.BubbleShooter.Scripts
+namespace RamStudio.BubbleShooter.Scripts.GUI
 {
     public class MenuButtons : MonoBehaviour
     {
